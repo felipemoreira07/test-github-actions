@@ -37,13 +37,20 @@ jobs:
           git commit -m "chore: atualização automática no README"
           git push origin $BRANCH_NAME
 
-      - name: Criar Pull Request
-        with:
-          token: ${{ env.GITHUB_TOKEN }}
-        run: gh pr create --title "Update" --body "This PR updates README to the latest version." --base main
-        # with:
-        #   token: ${{ secrets.GITHUB_TOKEN }}
-        #   title: "Atualização automática no README"
-        #   body: "Este PR foi criado automaticamente pelo GitHub Actions."
-        #   head: ${{ env.BRANCH_NAME }}
-        #   base: main
+      - name: Instalar GitHub CLI
+        run: sudo apt-get install gh -y
+
+      - name: Autenticar no GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "${GH_TOKEN}" | gh auth login --with-token
+
+      - name: Criar Pull Request com gh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --title "Update" \
+            --body "This PR updates README to the latest version." \
+            --base main \
+            --head ${{ env.BRANCH_NAME }}

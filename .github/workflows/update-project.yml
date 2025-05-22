@@ -9,7 +9,7 @@ jobs:
   create-pr:
     runs-on: ubuntu-latest
     env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout código
@@ -38,7 +38,8 @@ jobs:
           git push origin $BRANCH_NAME
 
       - name: Criar Pull Request
-        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ env.GITHUB_TOKEN }}
         run: gh pr create --title "Update" --body "This PR updates README to the latest version." --base main
         # with:
         #   token: ${{ secrets.GITHUB_TOKEN }}

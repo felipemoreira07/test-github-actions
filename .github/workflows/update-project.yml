@@ -8,9 +8,6 @@ on:
 jobs:
   create-pr:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     steps:
       - name: Checkout código
         uses: actions/checkout@v4

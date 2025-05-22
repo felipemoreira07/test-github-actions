@@ -8,6 +8,8 @@ on:
 jobs:
   create-pr:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     steps:
       - name: Checkout código
@@ -37,9 +39,10 @@ jobs:
 
       - name: Criar Pull Request
         uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: "Atualização automática no README"
-          body: "Este PR foi criado automaticamente pelo GitHub Actions."
-          head: ${{ env.BRANCH_NAME }}
-          base: main
+        run: gh pr create --title "Update" --body "This PR updates README to the latest version." --base main
+        # with:
+        #   token: ${{ secrets.GITHUB_TOKEN }}
+        #   title: "Atualização automática no README"
+        #   body: "Este PR foi criado automaticamente pelo GitHub Actions."
+        #   head: ${{ env.BRANCH_NAME }}
+        #   base: main

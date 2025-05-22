@@ -1,0 +1,45 @@
+name: Create PR with README Update
+
+on:
+  push:
+    branches:
+      - main # Ou troque para a branch principal do seu projeto
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Criar nova branch
+        run: |
+          TIMESTAMP=$(date +"%Y%m%d%H%M%S")
+          BRANCH_NAME=update-readme-$TIMESTAMP
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+          git checkout -b $BRANCH_NAME
+
+      - name: Atualizar README.md
+        run: |
+          echo "commit feito às $(date -u)" >> README.md
+
+      - name: Commit e push
+        run: |
+          git add README.md
+          git commit -m "chore: atualização automática no README"
+          git push origin $BRANCH_NAME
+
+      - name: Criar Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "Atualização automática no README"
+          body: "Este PR foi criado automaticamente pelo GitHub Actions."
+          head: ${{ env.BRANCH_NAME }}
+          base: main
